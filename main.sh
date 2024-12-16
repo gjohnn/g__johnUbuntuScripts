@@ -1,76 +1,108 @@
 #!/bin/bash
-echo 'Ingrese opcion'
-echo '1) Instalar PHP - MYSQL - COMPOSER - VIRTUAL BOX - JAVA'
-echo '2) Instalar NVIM con Nvchad con repositorio'
-echo '3) Instalar Visual Studio Code y Dbeaver'
-echo '99) Instalar todo'
+
+echo "Select an option:"
+echo "1) Install PHP - MySQL - Composer - VirtualBox - Java"
+echo "2) Install NVIM with NvChad from a repository"
+echo "3) Install Visual Studio Code and DBeaver"
+echo "4) Install Flatpak applications (KeePassXC, Postman, Obsidian)"
+echo "5) Install everything"
+read -p "Enter your choice [1-5]: " choice
 
 install_php_mysql_composer_virtualbox_java (){
-  #PHP
+  # Update the system
+  sudo dnf update -y
 
-  #MYSQL
+  # PHP
+  echo "Installing PHP..."
+  sudo dnf install -y php php-cli php-mbstring php-xml php-curl php-zip php-mysqlnd
 
-  #COMPOSER
+  # MySQL
+  echo "Installing MySQL..."
+  sudo dnf install -y @mysql
+  sudo systemctl enable mysqld
+  sudo systemctl start mysqld
 
-  #VIRTUAL BOX
+  # Composer
+  echo "Installing Composer..."
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  php -r "unlink('composer-setup.php');"
 
-  #JAVA
-  
+  # VirtualBox
+  echo "Installing VirtualBox..."
+  sudo dnf install -y @development-tools
+  sudo dnf install -y kernel-devel kernel-headers dkms qt5-qtx11extras elfutils-libelf-devel
+  sudo dnf config-manager --add-repo=https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
+  sudo dnf install -y VirtualBox-7.0  # Adjust the version number as needed
+  sudo usermod -aG vboxusers $USER
+
+  # Java
+  echo "Installing Java..."
+  sudo dnf install -y java-17-openjdk java-17-openjdk-devel
+
+  echo "Installation completed. Please restart if necessary."
 }
 
 install_nvim_clonemyrepo (){
-  #Download nvim in tar format to extract
-  tar -xfzx nvim-linux64.tar.gz
-  #Install it in system
+  echo "Installing Neovim..."
+  wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz -O nvim-linux64.tar.gz
+  tar -xzf nvim-linux64.tar.gz
+  sudo mv nvim-linux64 /usr/local/nvim
+  sudo ln -s /usr/local/nvim/bin/nvim /usr/local/bin/nvim
+  rm -f nvim-linux64.tar.gz
 
-  #git clone repository from gjohnn/gjohn_nvim
+  echo "Cloning NvChad configuration..."
+  git clone https://github.com/gjohnn/gjohn_nvim ~/.config/nvim
+  echo "Neovim installation and configuration completed."
 }
 
 install_vscode_dbeaver (){
   echo "Installing VS Code..."
-  
-  # Download .RPM for Vs Code
   wget https://go.microsoft.com/fwlink/?LinkID=760867 -O code.rpm
-  if [ $? -ne 0 ]; then
-    echo "Error downloading VS Code package"
-    exit 1
-  fi
-
-  # Install VS Code
-  sudo dnf install -y code.rpm
-  if [ $? -ne 0 ]; then
-    echo "Error installing VS Code"
-    exit 1
-  fi
-
-  # Clean rpm
-  rm -f code.rpm
+  sudo dnf install -y code.rpm && rm -f code.rpm
 
   echo "Installing DBeaver..."
-  
-  # Download .RPM for DBeaver
   wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.rpm -O dbeaver.rpm
-  if [ $? -ne 0 ]; then
-    echo "Error downloading DBeaver package"
-    exit 1
-  fi
+  sudo dnf install -y dbeaver.rpm && rm -f dbeaver.rpm
 
-  # Install DBeaver
-  sudo dnf install -y dbeaver.rpm
-  if [ $? -ne 0 ]; then
-    echo "Error installing DBeaver"
-    exit 1
-  fi
-
-  # Clean rpm
-  rm -f dbeaver.rpm
-
-  echo "Installation of Vs Code and Dbeaver completed!"
+  echo "VS Code and DBeaver installation completed."
 }
 
+install_flatpaks(){
+  echo "Installing Flatpak applications..."
+  flatpak install flathub org.keepassxc.KeePassXC -y
+  flatpak install flathub com.getpostman.Postman -y
+  flatpak install flathub md.obsidian.Obsidian -y
+  echo "Flatpak applications installed successfully."
+}
 
 install_all(){
+  echo "Installing all components..."
   install_php_mysql_composer_virtualbox_java
   install_nvim_clonemyrepo
   install_vscode_dbeaver
+  install_flatpaks
+  echo "All installations completed!"
 }
+
+# Switch statement to handle user choice
+case $choice in
+  1)
+    install_php_mysql_composer_virtualbox_java
+    ;;
+  2)
+    install_nvim_clonemyrepo
+    ;;
+  3)
+    install_vscode_dbeaver
+    ;;
+  4)
+    install_flatpaks
+    ;;
+  5)
+    install_all
+    ;;
+  *)
+    echo "Invalid option. Exiting."
+    ;;
+esac
