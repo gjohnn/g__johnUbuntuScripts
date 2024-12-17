@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Script made by gjohnn"
+
 echo "Select an option:"
 echo "1) Install PHP - MySQL - Composer - VirtualBox - Java"
 echo "2) Install NVIM with NvChad from a repository"
