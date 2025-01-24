@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Script made by gjohnn"
+echo "Script made by g__john"
 
 echo "Select an option:"
 echo "1) Install PHP - MySQL - Composer - VirtualBox - Java"
@@ -12,17 +12,17 @@ read -p "Enter your choice [1-5]: " choice
 
 install_php_mysql_composer_virtualbox_java (){
   # Update the system
-  sudo dnf update -y
+  sudo apt update && sudo apt upgrade -y
 
   # PHP
   echo "Installing PHP..."
-  sudo dnf install -y php php-cli php-mbstring php-xml php-curl php-zip php-mysqlnd
+  sudo apt install -y php php-cli php-mbstring php-xml php-curl php-zip php-mysql
 
   # MySQL
   echo "Installing MySQL..."
-  sudo dnf install -y @mysql
-  sudo systemctl enable mysqld
-  sudo systemctl start mysqld
+  sudo apt install -y mysql-server
+  sudo systemctl enable mysql
+  sudo systemctl start mysql
 
   # Composer
   echo "Installing Composer..."
@@ -32,15 +32,15 @@ install_php_mysql_composer_virtualbox_java (){
 
   # VirtualBox
   echo "Installing VirtualBox..."
-  sudo dnf install -y @development-tools
-  sudo dnf install -y kernel-devel kernel-headers dkms qt5-qtx11extras elfutils-libelf-devel
-  sudo dnf config-manager --add-repo=https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox.repo
-  sudo dnf install -y VirtualBox-7.0  # Adjust the version number as needed
+  sudo apt install -y build-essential dkms linux-headers-$(uname -r)
+  wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo gpg --dearmor -o /usr/share/keyrings/oracle_vbox_2016.gpg
+  echo "deb [signed-by=/usr/share/keyrings/oracle_vbox_2016.gpg] https://download.virtualbox.org/virtualbox/debian focal contrib" | sudo tee /etc/apt/sources.list.d/virtualbox.list
+  sudo apt update && sudo apt install -y virtualbox-7.0  # Ajustar la versión según sea necesario
   sudo usermod -aG vboxusers $USER
 
   # Java
   echo "Installing Java..."
-  sudo dnf install -y java-17-openjdk java-17-openjdk-devel
+  sudo apt install -y openjdk-17-jdk openjdk-17-jre
 
   echo "Installation completed. Please restart if necessary."
 }
@@ -60,18 +60,21 @@ install_nvim_clonemyrepo (){
 
 install_vscode_dbeaver (){
   echo "Installing VS Code..."
-  wget https://go.microsoft.com/fwlink/?LinkID=760867 -O code.rpm
-  sudo dnf install -y code.rpm && rm -f code.rpm
+  wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+  sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+  echo "deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list
+  sudo apt update && sudo apt install -y code && rm -f microsoft.gpg
 
   echo "Installing DBeaver..."
-  wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.rpm -O dbeaver.rpm
-  sudo dnf install -y dbeaver.rpm && rm -f dbeaver.rpm
+  wget https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb -O dbeaver.deb
+  sudo apt install -y ./dbeaver.deb && rm -f dbeaver.deb
 
   echo "VS Code and DBeaver installation completed."
 }
 
 install_flatpaks(){
   echo "Installing Flatpak applications..."
+  sudo apt install -y flatpak
   flatpak install flathub org.keepassxc.KeePassXC -y
   flatpak install flathub com.getpostman.Postman -y
   flatpak install flathub md.obsidian.Obsidian -y
@@ -108,3 +111,4 @@ case $choice in
     echo "Invalid option. Exiting."
     ;;
 esac
+
