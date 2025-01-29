@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo "Script made by g__john"
+echo "Script made by  ---- g__john ----"
 echo "dnf update -y running.."
 sudo dnf update -y
 echo "dnf update -y finished."
-
+#Select option section
 echo "Select an option:"
 echo "1) Install NVIM with NvChad from a repository"
 echo "2) Install VirtualBox, DBeaver, VLC, VSCode and VSCodium (RPM)"
@@ -58,13 +58,13 @@ install_dockerEngine_DockerDesktop(){
   esac
 }
 
-
 #Install all if Fedora based distro is a fresh install
 install_all(){
   echo "Installing all components..."
   install_nvim_clonemyrepo
   install_rpm_software
   install_flatpak_software
+  install_dockerEngine_DockerDesktop
   echo "All installations completed!"
 }
 
