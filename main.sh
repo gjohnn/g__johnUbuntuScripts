@@ -18,9 +18,9 @@ read -p "Enter your choice [1-4]: " choice
 #Nvim 0.10.3 with NvChad and my configs
 install_nvim_clonemyrepo (){
   echo "Installing Neovim..."
-  wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux64.tar.gz -O nvim-linux64.tar.gz
-  tar -xzf nvim-linux64.tar.gz
-  sudo mv nvim-linux64 /usr/local/nvim
+  wget https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz -O nvim-linux64.tar.gz
+  tar -xzf nvim-linux-x86_64.tar.gz
+  sudo mv nvim-linux64-x86_64 /usr/local/nvim
   sudo ln -s /usr/local/nvim/bin/nvim /usr/local/bin/nvim
   rm -f nvim-linux64.tar.gz
 
