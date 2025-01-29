@@ -3,37 +3,11 @@
 echo "Script made by g__john"
 
 echo "Select an option:"
-echo "1) Install PHP - MySQL - Composer - VirtualBox - Java"
-echo "2) Install NVIM with NvChad from a repository"
-echo "3) Install everything"
-read -p "Enter your choice [1-3]: " choice
-
-install_php83_mysql8_composerLatest_java17 (){
-  # Update the system
-  sudo apt update && sudo apt upgrade -y
-
-  # PHP
-  echo "Installing PHP..."
-  sudo apt install -y php php-cli php-mbstring php-xml php-curl php-zip php-mysql
-
-  # MySQL
-  echo "Installing MySQL..."
-  sudo apt install -y mysql-server
-  sudo systemctl enable mysql
-  sudo systemctl start mysql
-
-  # Composer
-  echo "Installing Composer..."
-  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-  php -r "unlink('composer-setup.php');"
-
-  # Java
-  echo "Installing Java..."
-  sudo apt install -y openjdk-17-jdk openjdk-17-jre
-
-  echo "Installation completed. Please restart if necessary."
-}
+echo "1) Install NVIM with NvChad from a repository"
+echo "2) Install VirtualBox, DBeaver, VLC (RPM)"
+echo "3) Install Obsidian, KeePass, Thunderbird (Flatpak)"
+echo "4) Install everything"
+read -p "Enter your choice [1-11]: " choice
 
 install_nvim_clonemyrepo (){
   echo "Installing Neovim..."
@@ -50,24 +24,40 @@ install_nvim_clonemyrepo (){
 
 install_all(){
   echo "Installing all components..."
-  install_php_mysql_composer_virtualbox_java
   install_nvim_clonemyrepo
   echo "All installations completed!"
+}
+
+install_rpm_software(){
+  echo "Installing VirtualBox, DBeaver, VLC (RPM)..."
+  sudo dnf install -y https://download.virtualbox.org/virtualbox/rpm/fedora/virtualbox-6.1-6.1.36_146713_fedora34-1.x86_64.rpm
+  sudo dnf install -y https://dbeaver.io/files/dbeaver-ce-22.3.0-stable.x86_64.rpm
+  sudo dnf install -y https://download.videolan.org/pub/vlc/last/fedora/vlc-3.0.11.1-1.fc34.x86_64.rpm
+  echo "VirtualBox, DBeaver, and VLC installation completed."
+}
+
+install_flatpak_software(){
+  echo "Installing Obsidian, KeePass, Thunderbird (Flatpak)..."
+  flatpak install --user -y flathub md.obsidian.Obsidian
+  flatpak install --user -y flathub org.keepassxc.KeePassXC
+  flatpak install --user -y flathub org.mozilla.Thunderbird
+  echo "Obsidian, KeePass, and Thunderbird installation completed."
 }
 
 # Switch statement to handle user choice
 case $choice in
   1)
-    install_php_mysql_composer_virtualbox_java
-    ;;
-  2)
     install_nvim_clonemyrepo
     ;;
+  2)install_rpm_software
+    ;;
   3)
+    install_flatpak_software
+    ;;
+  4)
     install_all
     ;;
   *)
     echo "Invalid option. Exiting."
     ;;
 esac
-
