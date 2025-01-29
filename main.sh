@@ -11,6 +11,8 @@ echo "2) Install VirtualBox, DBeaver, VLC, VSCode and VSCodium (RPM)"
 echo "3) Install Obsidian, KeePass, Thunderbird (Flatpak)"
 echo "4) Install Docker Engine and Docker Desktop Fedora"
 echo "5) Install everything"
+echo "6) Install Ani-Cli (Anime)"
+
 read -p "Enter your choice [1-4]: " choice
 
 #Nvim 0.10.3 with NvChad and my configs
@@ -97,6 +99,13 @@ install_flatpak_software(){
   flatpak install --user -y flathub org.mozilla.Thunderbird
   echo "Obsidian, KeePass, and Thunderbird installation completed."
 }
+install_ani-cli(){
+  echo "Installing ani-cli.."
+  git clone "https://github.com/pystardust/ani-cli.git"
+  sudo cp ani-cli/ani-cli /usr/local/bin
+  rm -rf ani-cli
+  echo "Ani-cli installed. Maybe you'll have to install another dependencies!!"
+}
 
 # Switch statement to handle user choice
 case $choice in
@@ -112,6 +121,9 @@ case $choice in
     install_dockerEngine_DockerDesktop
     ;;
   5)
+    install_all
+    ;;
+  6)
     install_all
     ;;
   *)
